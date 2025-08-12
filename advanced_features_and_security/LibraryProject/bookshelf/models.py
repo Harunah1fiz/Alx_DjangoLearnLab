@@ -62,11 +62,20 @@ class CustomUser(AbstractUser):
 
 
 
-
+class Author(models.Model):
+    name = models.CharField(max_length=100)
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(Author,on_delete=models.CASCADE, name='books')
     publication_year = models.IntegerField()
+
+    class Meta:
+        permissions = [
+            ("can_view", 'Can view Books'),
+            ("can_create", 'Can Create Books'),
+            ("can_edit", 'Can edit Books'),
+            ("can_delete", 'Can delete Books')
+        ]
 
 
