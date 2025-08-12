@@ -3,7 +3,7 @@ from .models import Book
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
+from .forms import ExampleForm
 # Create your views here.
 
 @permission_required('bookshelf.can_view', raise_exception=True)

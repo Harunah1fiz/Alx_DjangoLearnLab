@@ -24,7 +24,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-uq5#=p8h*qxbu3$6t20s&%uyur7j1eud@+)854%^y4z!kjuryo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+#Prevents malicious JavaScript from running in your site’s pages
+SECURE_BROWSER_XSS_FILTER = True
+#Prevents clickjacking attacks, where attackers trick users into clicking hidden buttons.
+X_FRAME_OPTIONS = 'DENY'
+#Prevents MIME-type sniffing attacks, where a malicious file might be executed as a different type.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+
+"""
+CSRF_COOKIE_SECURE ensures the CSRF token (used for form security) is only sent over HTTPS — prevents it from being stolen on insecure HTTP.
+
+SESSION_COOKIE_SECURE ensures login sessions are only sent over HTTPS — prevents session hijacking.
+
+⚠️ Important: Your site must have HTTPS enabled before setting these to True, otherwise cookies won’t work at all in HTTP
+"""
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
 
 ALLOWED_HOSTS = []
 
@@ -39,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf',
-  
 ]
 
 

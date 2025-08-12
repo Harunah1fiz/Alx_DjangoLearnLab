@@ -9,6 +9,7 @@
 </head>
 <body>
     <header>
+        
         <h2>
             Welcome to the city library
         </h2>
@@ -32,7 +33,12 @@
                 </div>
             </div>
         </section>
-        
+        <section>
+            <form action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+        </section>
     </main>
 </body>
 </html>
