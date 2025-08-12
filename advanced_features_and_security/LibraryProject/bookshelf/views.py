@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import Book
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 @permission_required('bookshelf.can_view', raise_exception=True)
@@ -13,4 +15,13 @@ def edit_book(request):
 def index(request):
     return render(request, 'index.html')
 
+
+@login_required  # Ensures only logged-in users can access
+def book_list(request):
+    # This is where you'd get your books from the DB
+    books = [
+        {"title": "Book One", "author": "Author One"},
+        {"title": "Book Two", "author": "Author Two"},
+    ]
+    return render(request, 'bookshelf/book_list.html', {'books': books})
 
