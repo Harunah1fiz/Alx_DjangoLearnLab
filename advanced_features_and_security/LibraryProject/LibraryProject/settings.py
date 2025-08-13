@@ -33,6 +33,9 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # Enable the browser’s XSS filter
 SECURE_BROWSER_XSS_FILTER = True
+# Trust the proxy header to determine if the request is secure
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 if not DEBUG:
     #configuring django for https support
     #Set to True to redirect all non-HTTPS requests to HTTPS.
