@@ -32,7 +32,18 @@ X_FRAME_OPTIONS = 'DENY'
 #Prevents MIME-type sniffing attacks, where a malicious file might be executed as a different type.
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
+if not DEBUG:
+    #configuring django for https support
+    #Set to True to redirect all non-HTTPS requests to HTTPS.
+    SECURE_SSL_REDIRECT = True
+    # Enforce HTTPS for 1 year
+    SECURE_HSTS_SECONDS = 31536000  
 
+    # Apply HSTS to all subdomains
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True  
+
+    # Allow the site to be included in browsers' preload list
+    SECURE_HSTS_PRELOAD = True
 """
 CSRF_COOKIE_SECURE ensures the CSRF token (used for form security) is only sent over HTTPS — prevents it from being stolen on insecure HTTP.
 
@@ -46,6 +57,15 @@ SESSION_COOKIE_SECURE = True
 
 
 ALLOWED_HOSTS = []
+
+# Prevent site from being displayed in an iframe (protects against clickjacking)
+X_FRAME_OPTIONS = 'DENY'
+
+# Prevent browsers from guessing content types (MIME sniffing)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable the browser’s XSS filter
+SECURE_BROWSER_XSS_FILTER = True
 
 
 # Application definition
