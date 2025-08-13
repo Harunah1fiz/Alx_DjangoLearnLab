@@ -31,7 +31,8 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 #Prevents MIME-type sniffing attacks, where a malicious file might be executed as a different type.
 SECURE_CONTENT_TYPE_NOSNIFF = True
-
+# Enable the browser’s XSS filter
+SECURE_BROWSER_XSS_FILTER = True
 if not DEBUG:
     #configuring django for https support
     #Set to True to redirect all non-HTTPS requests to HTTPS.
