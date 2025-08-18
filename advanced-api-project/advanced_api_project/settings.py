@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from pathlib import Path
 import mimetypes
 
 mimetypes.add_type("text/css",".css", True)
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f7q_$*r2b(2z&a7@6&)5ftlap(znakp7xb-v4$(4!-5==mf5iz'
+SECRET_KEY = 'django-insecure-cue!y@yos4s1j9ko*&a8n3#r!gc_zx29ug&y0*b_fi*q08-b9n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
