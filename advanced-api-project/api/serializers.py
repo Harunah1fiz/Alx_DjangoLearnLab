@@ -12,6 +12,11 @@ class BookSerializer(serializers.ModelSerializer):
         if value > current_year:
             raise serializers.ValidationError("publication year cannot be in the future")
         return value
+    
+    def validate_title(self, value):
+        if len(value) < 3:
+            raise serializers.ValidationError("title is too short")
+        return value
 
 # AuthorSerializer serializes the Author model and includes nested books
 class AuthorSerializer(serializers.ModelSerializer):
@@ -21,3 +26,5 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['id', 'name','books']
+
+
