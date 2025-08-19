@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
 
@@ -19,6 +19,7 @@ from .serializers import BookSerializer
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # No permission restriction: publicly accessible
 
 
@@ -26,6 +27,7 @@ class BookListView(generics.ListAPIView):
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # No permission restriction: publicly accessible
 
 
@@ -33,7 +35,7 @@ class BookDetailView(generics.RetrieveAPIView):
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # Only logged-in users can create
+    permission_classes = [IsAuthenticated]  # Only logged-in users can create
 
     # perform_create is a hook that lets us customize object creation.
     # Here, we simply call serializer.save(), but we could also attach
@@ -46,7 +48,7 @@ class BookCreateView(generics.CreateAPIView):
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # Only logged-in users can update
+    permission_classes = [IsAuthenticated]  # Only logged-in users can update
 
     # perform_update allows customization of object updating.
     # Currently, just saves the serializer.
@@ -58,4 +60,4 @@ class BookUpdateView(generics.UpdateAPIView):
 class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # Only logged-in users can delete
+    permission_classes = [IsAuthenticated]  # Only logged-in users can delete
