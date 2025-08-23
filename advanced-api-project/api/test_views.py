@@ -1,8 +1,9 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from .models import Book, Author
+
 
 class BookAPITestCase(APITestCase):
     def setUp(self):
@@ -20,22 +21,17 @@ class BookAPITestCase(APITestCase):
         )
 
         # Endpoints
-        self.list_url = reverse("book-list")   # Make sure your urls.py names match
+        self.list_url = reverse("book-list")
         self.detail_url = reverse("book-detail", args=[self.book.id])
         self.create_url = reverse("book-create")
         self.update_url = reverse("book-update", args=[self.book.id])
         self.delete_url = reverse("book-delete", args=[self.book.id])
 
-        # Clients
-        self.client = APIClient()
-        self.auth_client = APIClient()
-        self.auth_client.login(username="testuser", password="pass1234")
-
     # ==============================
     # TEST LIST VIEW
     # ==============================
     def test_list_books(self):
-        response = self.client.get(self.list_url)
+        response = self.client.get(self.list_url)  # public should work (read-only)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 1)
 
@@ -43,8 +39,11 @@ class BookAPITestCase(APITestCase):
     # TEST CREATE VIEW
     # ==============================
     def test_create_book_authenticated(self):
+        # Login required
+        self.client.login(username="testuser", password="pass1234")
+
         data = {"title": "New Book", "author": self.author.id, "publication_year": 2023}
-        response = self.auth_client.post(self.create_url, data)
+        response = self.client.post(self.create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 2)
 
@@ -57,19 +56,32 @@ class BookAPITestCase(APITestCase):
     # TEST UPDATE VIEW
     # ==============================
     def test_update_book_authenticated(self):
+        self.client.login(username="testuser", password="pass1234")
+
         data = {"title": "Updated Title", "author": self.author.id, "publication_year": 2022}
-        response = self.auth_client.put(self.update_url, data)
+        response = self.client.put(self.update_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "Updated Title")
+
+    def test_update_book_unauthenticated(self):
+        data = {"title": "Unauthorized Update", "author": self.author.id, "publication_year": 2022}
+        response = self.client.put(self.update_url, data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # ==============================
     # TEST DELETE VIEW
     # ==============================
     def test_delete_book_authenticated(self):
-        response = self.auth_client.delete(self.delete_url)
+        self.client.login(username="testuser", password="pass1234")
+
+        response = self.client.delete(self.delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 0)
+
+    def test_delete_book_unauthenticated(self):
+        response = self.client.delete(self.delete_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # ==============================
     # TEST FILTER, SEARCH, ORDER
