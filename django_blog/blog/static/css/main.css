@@ -33,7 +33,26 @@
 	padding: 0px; 
 	box-sizing: border-box;
 }
-
+.error{
+  font-size: smaller;
+  color:black;
+  padding-left: 10px;
+  background-color: rgba(255, 0, 0, 0.616);
+  margin-bottom: 10px;
+}
+.success{
+  font-size: smaller;
+  color: green ;
+  padding: 10px;
+  background-color: #57b846;
+}
+.messages{
+  text-align: center;
+  font-size: smaller;
+  color: green ;
+  padding: 10px;
+  background-color: #57b846;
+}
 body, html {
 	height: 100%;
 	font-family: Poppins-Regular, sans-serif;
@@ -53,7 +72,7 @@ a {
 }
 
 a:focus {
-	outline: none !important;
+	outline: none;
 }
 
 a:hover {
@@ -92,7 +111,7 @@ textarea {
 }
 
 textarea:focus, input:focus {
-  border-color: transparent !important;
+  border-color: transparent ;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }
@@ -158,7 +177,7 @@ iframe {
 
 .container-login100 {
   width: 100%;  
-  min-height: 100vh;
+  min-height: 80vh;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -168,11 +187,11 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background: #9053c7;
+  /* background: #9053c7;
   background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
   background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
   background: -moz-linear-gradient(-135deg, #c850c0, #4158d0);
-  background: linear-gradient(-135deg, #c850c0, #4158d0);
+  background: linear-gradient(-135deg, #c850c0, #4158d0); */
 }
 
 .wrap-login100 {
@@ -180,7 +199,6 @@ iframe {
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -188,7 +206,7 @@ iframe {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 177px 130px 33px 95px;
+  padding: 100px 130px 33px 95px;
 }
 
 /*------------------------------------------------------------------
@@ -217,7 +235,7 @@ iframe {
 
   width: 100%;
   display: block;
-  padding-bottom: 54px;
+  padding-bottom: 35px;
 }
 
 

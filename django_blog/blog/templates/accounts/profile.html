@@ -2,6 +2,26 @@
 {% block title %} myProfile {% endblock %}
 
 {% block content %}
-    <h2>Welcome {{ user.username }}</h2>
-    <p>Email: {{ user.email }}</p>
+    <h2>Manage Profile</h2>
+<form method="POST" >
+    {% csrf_token %}
+    <fieldset>
+        <legend>User Information</legend>
+        {{ u_form.as_p }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Profile Details</legend>
+        {{ p_form.as_p }}
+    </fieldset>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<hr>
+<p><strong>Current Bio:</strong> {{ request.user.profile.bio }}</p>
+{% if request.user.profile.profile_picture %}
+    <img src="{{ request.user.profile.profile_picture.url }}" width="150">
+{% endif %}
+
 {% endblock %}
