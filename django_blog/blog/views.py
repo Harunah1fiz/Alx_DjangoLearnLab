@@ -47,6 +47,6 @@ def betterRegister(request):
                 return redirect("login")
         else:
             form = UserRegistration()
-        return render(request, "accounts/registeration.html", {"form": form})
+        return render(request, "accounts/register.html", {"form": form})
 
 
