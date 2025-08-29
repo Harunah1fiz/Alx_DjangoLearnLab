@@ -36,7 +36,7 @@ def profile(request):
         print("not checked")
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
-    return render(request, "accounts/profiles.html", {'u_form': u_form, 'p_form':p_form})
+    return render(request, "accounts/profile.html", {'u_form': u_form, 'p_form':p_form})
 
 def betterRegister(request):
         if request.method == "POST":
