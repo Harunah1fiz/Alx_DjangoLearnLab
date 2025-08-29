@@ -9,10 +9,10 @@ from .  import views
 
 urlpatterns = [
     path("posts", PostListView.as_view(), name="post_list"),
-    path("posts/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
-    path("posts/<int:pk>/new/", PostCreateView.as_view(), name="post_create"),
-    path("posts/<int:pk>/edit/", PostUpdateView.as_view(), name="post_update"),
-    path("posts/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
+    path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
+    path("post/new/", PostCreateView.as_view(), name="post_create"),
+    path("post/<int:pk>/edit/", PostUpdateView.as_view(), name="post_update"),
+    path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
     path("register/", views.betterRegister, name="register"),
     path("profile/", views.profile, name="profile"),
     path("prof/", views.prof, name="prof"),
