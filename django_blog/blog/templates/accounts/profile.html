@@ -3,8 +3,7 @@
 {% block title %} Login {% endblock %}
 
 
-{% block styles %}
-{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <!--===============================================================================================-->	
 	<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
 <!--===============================================================================================-->
@@ -22,7 +21,6 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 <!--===============================================================================================-->
-{% endblock %}
 
 {% block content %}
 <div class="container">
