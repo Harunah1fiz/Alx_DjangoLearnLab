@@ -2,8 +2,62 @@
 
 {% block content %}
 
-<h1>{{ blogpost.title }}</h1>
-<p>{{ blogpost.content }}</p>
+<!-- blog/templates/blog/post_detail.html -->
 
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p><small>By {{ post.author }} | {{ post.created_at }}</small></p>
+
+<hr>
+
+<!-- Display Comments -->
+<h2>Comments</h2>
+{% if post.comments.all %}
+    {% for comment in post.comments.all %}
+        <div class="comment-box">
+            <p><strong>{{ comment.author }}</strong> said:</p>
+            <p>{{ comment.content }}</p>
+            <p><small>{{ comment.created_at|date:"M d, Y H:i" }}</small></p>
+            
+            {% if user == comment.author %}
+                <a href="{% url 'comment_edit' comment.pk %}">Edit</a> | 
+                <a href="{% url 'comment_delete' comment.pk %}">Delete</a>
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>No comments yet. Be the first to comment!</p>
+{% endif %}
+<!-- 
+{% if comments %}
+    {% for comment in comments %}
+        <div class="comment-box">
+            <p><strong>{{ comment.author }}</strong> said:</p>
+            <p>{{ comment.content }}</p>
+            <p><small>{{ comment.created_at|date:"M d, Y H:i" }}</small></p>
+            
+            {% if user == comment.author %}
+                <a href="{% url 'comment_edit' comment.pk %}">Edit</a> | 
+                <a href="{% url 'comment_delete' comment.pk %}">Delete</a>
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>No comments yet. Be the first to comment!</p>
+{% endif %} -->
+
+<!-- Comment Form (Only if logged in) -->
+{% if user.is_authenticated %}
+    <h3>Leave a Comment</h3>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+{% endif %}
 
 {% endblock%}

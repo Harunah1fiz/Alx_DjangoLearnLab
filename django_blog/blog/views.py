@@ -4,10 +4,13 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .forms import UserRegistration,UserUpdateForm,ProfileUpdateForm,PostForm
+from .forms import UserRegistration,UserUpdateForm,ProfileUpdateForm,PostForm, CommentForm
 from django.views.generic import ListView,DetailView,CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin
-from .models import Profile, post
+from .models import Profile, Post, Comment
+from django.shortcuts import get_object_or_404
+#blog comments
+
 
 
 # Create your views here.
@@ -57,18 +60,18 @@ def betterRegister(request):
 #blogs
 
 class PostListView(ListView):
-    model = post
+    model = Post
     template_name = "blog/post_list.html"
     context_object_name = "posts"
     ordering = ["-published_date"]
 
 class PostDetailView(DetailView):
-    model = post
+    model = Post
     template_name = "blog/post_detail.html"
-    context_object_name = "blogpost"
+    context_object_name = "post"
 
 class PostCreateView(LoginRequiredMixin,CreateView):
-    model = post
+    model = Post
     form_class = PostForm
     template_name = "blog/post_form.html"
     success_url = reverse_lazy("post_list")
@@ -85,7 +88,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     - The form automatically sets the author to the current logged-in user.
     """
 
-    model = post
+    model = Post
     form_class = PostForm
     template_name = "blog/post_form.html"
     success_url = reverse_lazy("post_list")
@@ -103,10 +106,71 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = post
+    model = Post
     template_name = "blog/post_confirm_delete.html"
     success_url = reverse_lazy("post_list")
 
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+    
+
+
+#comment
+
+
+# class CommentCreateView(LoginRequiredMixin, CreateView):
+#     model = Comment
+#     form_class = CommentForm
+
+#     def form_valid(self, form):
+#         post = get_object_or_404(post, pk=self.kwargs['pk'])
+#         form.instance.post = post
+#         form.instance.author = self.request.user
+#         return super().form_valid(form)
+    
+
+#     def get_success_url(self):
+#         return self.object.post.get_absolute_url()
+def CommentCreateView(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comment_set.all()
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect("post_detail", pk=post.pk)
+    else:
+        form = CommentForm()
+    return render(request,"blog/post_detail.html", {"form": form, "comments":comments,"post": post})
+
+        
+
+
+    
+
+#update ccomment
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()

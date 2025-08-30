@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile,post
+from .models import Profile,Post, Comment
 
 class UserRegistration(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -22,7 +22,7 @@ class ProfileUpdateForm(forms.ModelForm):
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = post
+        model = Post
         fields = ['title','content']
 
     def clean_title(self):
@@ -30,3 +30,14 @@ class PostForm(forms.ModelForm):
         if len(title) < 5:
             raise forms.ValidationError("the title must be at least 5 characters Long.")
         return title
+    
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']   # only content is editable
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Write your comment...'}),
+        }
+
+
