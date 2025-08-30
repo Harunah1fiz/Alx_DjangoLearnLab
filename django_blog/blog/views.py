@@ -134,7 +134,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 #         return self.object.post.get_absolute_url()
 def CommentCreateView(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    comments = post.comment_set.all()
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -143,9 +142,8 @@ def CommentCreateView(request, pk):
             comment.author = request.user
             comment.save()
             return redirect("post_detail", pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request,"blog/post_detail.html", {"form": form, "comments":comments,"post": post})
+
+    return redirect("post_detail", pk = post.pk)
 
         
 
