@@ -10,7 +10,7 @@ from .  import views
 
 urlpatterns = [
         path("search/", views.search, name="search"),
-    path("tags/<str:tag_name>/", views.posts_by_tag, name="posts_by_tag"),
+    path("tags/slug:tag_name>/", views.posts_by_tag, name="posts_by_tag"),
     path("posts", PostListView.as_view(), name="post_list"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
     path("post/new/", PostCreateView.as_view(), name="post_create"),
