@@ -1,47 +1,43 @@
-from rest_framework import generics, status, permissions
-from rest_framework.response import Response
-from .models import Post, Like
-from notifications.models import Notification  # make sure you created this app and model
-
-class LikePostView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request, pk):
-        post = generics.get_object_or_404(Post, pk=pk)  # ✅ matches the check
-        like, created = Like.objects.get_or_create(user=request.user, post=post)
-        if not created:
-            return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Create a notification for the post author
-        if post.author != request.user:  # prevent self-notifications
-            Notification.objects.create(
-                recipient=post.author,
-                actor=request.user,
-                verb="liked",
-                target=post
-            )
-
-        return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+from rest_framework import viewsets, permissions
+from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
 
 
-class UnlikePostView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+# --- Permissions ---
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission: only allow owners to edit/delete their own objects.
+    """
 
-    def post(self, request, pk):
-        post = generics.get_object_or_404(Post, pk=pk)  # ✅ matches the check
-        like = Like.objects.filter(user=request.user, post=post)
-        if like.exists():
-            like.delete()
-            return Response({"detail": "Post unliked successfully."}, status=status.HTTP_200_OK)
-        return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+    def has_object_permission(self, request, view, obj):
+        # SAFE_METHODS = GET, HEAD, OPTIONS (read-only)
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.author == request.user
 
 
-# ✅ Feed view
-class FeedView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+# --- Post ViewSet ---
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all().order_by('-created_at')
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+# --- Comment ViewSet ---
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        # Get users the current user follows
-        following_users = self.request.user.following.all()  
-        # Return posts from followed users, most recent first
-        return Post.objects.filter(author__in=following_users).order_by('-created_at')
+        post_id = self.kwargs.get("post_pk")  # assumes nested routing
+        return Comment.objects.filter(post__id=post_id).order_by("-created_at")
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get("post_pk")
+        post = get_object_or_404(Post, id=post_id)
+        serializer.save(author=self.request.user, post=post)
