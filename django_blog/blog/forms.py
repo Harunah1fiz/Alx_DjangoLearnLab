@@ -23,7 +23,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title','content']
+        fields = ['title','content', "tags"]
 
     def clean_title(self):
         title = self.cleaned_data.get("title")

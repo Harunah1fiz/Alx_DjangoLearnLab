@@ -2,6 +2,10 @@
 
 {% block content %}
 
+<form method="get" action="{% url 'search' %}" class="search-form">
+    <input type="text" name="q" placeholder="Search posts..." required>
+    <button type="submit">Search</button>
+</form>
 {% for post in posts %}
 <h1><a href="{% url 'post_detail' post.pk %}">
     {{ post.title }}
