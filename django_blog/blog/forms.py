@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile,Post, Comment
-
+from taggit.forms import TagWidget
 class UserRegistration(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -24,7 +24,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title','content', "tags"]
-
+        widgets = {
+            "tags": TagWidget(),   # ✅ make tags use TagWidget
+        }
     def clean_title(self):
         title = self.cleaned_data.get("title")
         if len(title) < 5:
