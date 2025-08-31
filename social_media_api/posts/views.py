@@ -8,19 +8,18 @@ from .serializers import PostSerializer, CommentSerializer
 # --- Permissions ---
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission: only allow owners to edit/delete their own objects.
+    Only allow owners to edit/delete their own posts & comments.
     """
 
     def has_object_permission(self, request, view, obj):
-        # SAFE_METHODS = GET, HEAD, OPTIONS (read-only)
-        if request.method in permissions.SAFE_METHODS:
+        if request.method in permissions.SAFE_METHODS:  # GET, HEAD, OPTIONS
             return True
         return obj.author == request.user
 
 
 # --- Post ViewSet ---
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -28,16 +27,22 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# --- Comment ViewSet ---
+# --- Comment ViewSet (no Comment.objects.all()) ---
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        post_id = self.kwargs.get("post_pk")  # assumes nested routing
+        """
+        Restrict comments to a given post, avoids using Comment.objects.all().
+        """
+        post_id = self.kwargs.get("post_pk")  # comes from nested router
         return Comment.objects.filter(post__id=post_id).order_by("-created_at")
 
     def perform_create(self, serializer):
+        """
+        Attach the comment to the correct post & current user.
+        """
         post_id = self.kwargs.get("post_pk")
         post = get_object_or_404(Post, id=post_id)
         serializer.save(author=self.request.user, post=post)
