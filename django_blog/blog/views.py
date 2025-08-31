@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 #blog comments
 
 from django.db.models import Q
-
+from taggit.models import Tag
 
 # Create your views here.
 #registration
@@ -180,6 +180,20 @@ def posts_by_tag(request, tag_name):
     posts = Post.objects.filter(tags__name__iexact = tag_name)
     return render(request, 'blog/tagged_posts.html', {"posts": posts})
 
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/tagged_posts.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get("tag_slug")
+        return Post.objects.filter(tags__slug=tag_slug)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_slug = self.kwargs.get("tag_slug")
+        context["tag"] = Tag.objects.get(slug=tag_slug)
 def search(request):
     query = request.GET.get("q")
     posts = Post.objects.filter(
