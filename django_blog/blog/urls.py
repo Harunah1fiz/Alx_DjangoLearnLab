@@ -10,8 +10,8 @@ from .views import(
 from .  import views
 
 urlpatterns = [
-        path("search/", views.search, name="search"),
-    path("tags/slug:tag_slug>/", PostByTagListView.as_view(), name="posts_by_tag"),
+    path("search/", views.search, name="search"),
+        path("tags/<slug:tag_slug>/", views.PostByTagListView.as_view(), name="posts_by_tag"),
     path("posts", PostListView.as_view(), name="post_list"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
     path("post/new/", PostCreateView.as_view(), name="post_create"),
