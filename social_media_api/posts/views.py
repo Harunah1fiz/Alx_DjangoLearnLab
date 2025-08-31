@@ -19,7 +19,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 # --- Post ViewSet ---
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.order_by('-created_at')
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
